@@ -1,3 +1,8 @@
+/*@file main
+*@brief Integrates knowledge that I learned in COP 2001
+*@author Vladimir Hardy
+*@bugs Inputting numbers with spaces jumps through multiple cin statements. Create account doesnt work yet.
+*/
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -34,12 +39,12 @@ int main() {
                 produceItems();
                 break;
             case 2:
-                std::cout << "Would you like to create a new account? (yes or no)\n";
-
+                std::cout << "Do you have an account? (yes or no)\n";
+                std::cin >> ans;
                 if (ans == "yes" || ans == "Yes" || ans == "y") {
-                    createAccount(); //Call to createAccount which will create a new username and password
                     employeeAccount();
                 } else {
+                    createAccount(); //Call to createAccount which will create a new username and password
                     employeeAccount(); //Call to employeeAccount which will prompt the user to log in
                 }
                 break;
@@ -65,10 +70,12 @@ int main() {
 }
 
 void showMenu() {
-    std::cout << "Hello There! Please select an option below:\n" << std::endl;
+    std::cout
+            << "======================================================\nHello There! Please select an option below:\n======================================================\n"
+            << std::endl;
     std::cout << "Production Line Tracker\n";
     std::cout << "1. Produce Items\n" << "2. Add Employee Account\n" << "3. Add Music Player\n"
-    << "4. Add Movie Player\n" << "5. Display Production Statistics\n" << "6. Exit\n";
+              << "4. Add Movie Player\n" << "5. Display Production Statistics\n" << "6. Exit\n";
 }
 
 void produceItems() {
@@ -81,43 +88,42 @@ void produceItems() {
     std::cout << "Enter the Product Name\n";
     std::string prodName;
     //std::cin >> prodName;
-    std::string serialNum = manufacturer.substr(0,3);
+    std::string firstThreeLetters = manufacturer.substr(0, 3);
     prodName = "iPod";
     std::cout << "Enter the item type\n";
     std::cout << "1. Audio\n" <<
-         "2. Visual\n" <<
-         "3. AudioMobile\n" <<
-         "4. VisualMobile\n";
+              "2. Visual\n" <<
+              "3. AudioMobile\n" <<
+              "4. VisualMobile\n";
     int itemTypeChoice;
     std::cin >> itemTypeChoice;
     std::string itemTypeCode;
     if (itemTypeChoice == 1) {
-        itemTypeCode = "MM0000";
-    }
-    else if(itemTypeChoice == 2) {
-        itemTypeCode = "VI0000";
-    }
-    else if(itemTypeChoice == 3) {
-        itemTypeCode = "AM0000";
-    }
-    else if(itemTypeChoice == 4) {
-        itemTypeCode = "VM0000";
-    }
-    else {
+        itemTypeCode = "MM";
+    } else if (itemTypeChoice == 2) {
+        itemTypeCode = "VI";
+    } else if (itemTypeChoice == 3) {
+        itemTypeCode = "AM";
+    } else if (itemTypeChoice == 4) {
+        itemTypeCode = "VM";
+    } else {
         std::cout << "Invalid Choice\n";
     }
-    // write code to set the item type code based on the selected item type
     // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
-
     std::cout << "Enter the number of items that were produced\n";
     int numProduced;
     std::cin >> numProduced;
-    for (int i = 1;i <= numProduced;i++) {
+    std::string serialNum;
+    for (int i = 1; i <= numProduced; i++) { //This loop records the production of the product
         std::cout << "Production Number: " << i << std::flush;
-        std::cout << " Serial Number: " << serialNum << itemTypeCode << i << std::endl; //set the precision (0000)
+        std::cout << " Serial Number: " << std::flush;
+        std::cout.fill('0');
+        std::cout.width(6);
+        std::cout << std::left << itemTypeCode << i << std::endl;
     }
-    // add a loop to record production, for now simply by
-    // outputting production number and serial number
+    std::ofstream myOutputFile;
+    myOutputFile.open("production.txt", std::ios_base::app);
+    myOutputFile << serialNum << std::endl;
 }
 
 std::string createAccount() {
@@ -149,33 +155,24 @@ void employeeAccount() {
     std::string line;
     std::ifstream myInputFile("loginCreds.txt");
     if (myInputFile.is_open()) {
-       /*while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
-        {
-            if (line == username) { //change username to something that reads info from the loginCreds file
-                std::cout << "Access Granted" << std::endl;
-            } else {
-                std::cout << "The username you entered is incorrect" << std::endl;
-                break;
-            }
-            if (line == password) {
-                std::cout << "Access Granted" << std::endl;
-                break;
-            } else {
-                std::cout << "The password you entered is incorrect" << std::endl;
-                break;
-            }
-        }*/
+        /*while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
+         {
+             if (line == username) { //change username to something that reads info from the loginCreds file
+                 std::cout << "Access Granted" << std::endl;
+             } else {
+                 std::cout << "The username you entered is incorrect" << std::endl;
+                 break;
+             }
+             if (line == password) {
+                 std::cout << "Access Granted" << std::endl;
+                 break;
+             } else {
+                 std::cout << "The password you entered is incorrect" << std::endl;
+                 break;
+             }
+         }*/
         myInputFile.close();
     } else std::cout << "Unable to open file" << std::endl;
-
-    if (myInputFile.is_open()) {
-        while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
-        {
-
-
-        }
-        myInputFile.close();
-    } else std::cout << "Unable to open file\n";
 }
 
 void musicPlayer() {
