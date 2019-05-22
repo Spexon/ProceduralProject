@@ -7,6 +7,8 @@
 //These prototypes can be put inside a header file
 void showMenu();
 
+void produceItems();
+
 void employeeAccount();
 
 std::string createAccount();
@@ -28,7 +30,10 @@ int main() {
         std::cin >> number;
         std::string ans;
         switch (number) {
-            case 1:
+            case 1: //Catalog of products being produced
+                produceItems();
+                break;
+            case 2:
                 std::cout << "Would you like to create a new account? (yes or no)\n";
 
                 if (ans == "yes" || ans == "Yes" || ans == "y") {
@@ -38,16 +43,16 @@ int main() {
                     employeeAccount(); //Call to employeeAccount which will prompt the user to log in
                 }
                 break;
-            case 2:
+            case 3:
                 musicPlayer(); //STUB function
                 break;
-            case 3:
+            case 4:
                 moviePlayer(); //STUB function
                 break;
-            case 4:
+            case 5:
                 productionStatistics(); //STUB function
                 break;
-            case 5:
+            case 6:
                 exit(); //Exit the switch statement
                 reRun = false; //breaks out of the while loop
                 break;
@@ -62,12 +67,61 @@ int main() {
 void showMenu() {
     std::cout << "Hello There! Please select an option below:\n" << std::endl;
     std::cout << "Production Line Tracker\n";
-    std::cout << "1. Add Employee Account\n" << "2. Add Music Player\n" << "3. Add Movie Player\n"
-              << "4. Display Production Statistics\n" << "5. Exit\n";
+    std::cout << "1. Produce Items\n" << "2. Add Employee Account\n" << "3. Add Music Player\n"
+    << "4. Add Movie Player\n" << "5. Display Production Statistics\n" << "6. Exit\n";
+}
+
+void produceItems() {
+    // Eventually the user will be able to choose the item to produce.
+    // For now, just have them input the information.
+    std::cout << "Enter the Manufacturer\n";
+    std::string manufacturer;
+    //std::cin >> manufacturer;
+    manufacturer = "Apple";
+    std::cout << "Enter the Product Name\n";
+    std::string prodName;
+    //std::cin >> prodName;
+    std::string serialNum = manufacturer.substr(0,3);
+    prodName = "iPod";
+    std::cout << "Enter the item type\n";
+    std::cout << "1. Audio\n" <<
+         "2. Visual\n" <<
+         "3. AudioMobile\n" <<
+         "4. VisualMobile\n";
+    int itemTypeChoice;
+    std::cin >> itemTypeChoice;
+    std::string itemTypeCode;
+    if (itemTypeChoice == 1) {
+        itemTypeCode = "MM0000";
+    }
+    else if(itemTypeChoice == 2) {
+        itemTypeCode = "VI0000";
+    }
+    else if(itemTypeChoice == 3) {
+        itemTypeCode = "AM0000";
+    }
+    else if(itemTypeChoice == 4) {
+        itemTypeCode = "VM0000";
+    }
+    else {
+        std::cout << "Invalid Choice\n";
+    }
+    // write code to set the item type code based on the selected item type
+    // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
+
+    std::cout << "Enter the number of items that were produced\n";
+    int numProduced;
+    std::cin >> numProduced;
+    for (int i = 1;i <= numProduced;i++) {
+        std::cout << "Production Number: " << i << std::flush;
+        std::cout << " Serial Number: " << serialNum << itemTypeCode << i << std::endl; //set the precision (0000)
+    }
+    // add a loop to record production, for now simply by
+    // outputting production number and serial number
 }
 
 std::string createAccount() {
-    std::cout << "Please enter your full name";
+    std::cout << "Please enter your full name\n";
     std::string name;
     std::cin >> name;
     std::ofstream myOutputFile;
@@ -95,7 +149,7 @@ void employeeAccount() {
     std::string line;
     std::ifstream myInputFile("loginCreds.txt");
     if (myInputFile.is_open()) {
-        while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
+       /*while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
         {
             if (line == username) { //change username to something that reads info from the loginCreds file
                 std::cout << "Access Granted" << std::endl;
@@ -110,9 +164,9 @@ void employeeAccount() {
                 std::cout << "The password you entered is incorrect" << std::endl;
                 break;
             }
-        }
+        }*/
         myInputFile.close();
-    } else std::cout << "Unable to open file";
+    } else std::cout << "Unable to open file" << std::endl;
 
     if (myInputFile.is_open()) {
         while (getline(myInputFile, line)) //Stores a line into a file called line, then uses that to output to console
