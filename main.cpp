@@ -6,25 +6,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cstdio>
+#include "Prototypes.h"
 
 //Ctrl + alt +  L for code formatter
-//prototype (gives the compiler a heads up about the upcoming function)
-//These prototypes can be put inside a header file
-void showMenu();
-
-void produceItems();
-
-void employeeAccount();
-
-std::string createAccount();
-
-void musicPlayer();
-
-void moviePlayer();
-
-void productionStatistics();
-
-void exit();
 
 int main() {
 
@@ -88,8 +73,9 @@ void produceItems() {
     std::cout << "Enter the Product Name\n";
     std::string prodName;
     //std::cin >> prodName;
-    std::string firstThreeLetters = manufacturer.substr(0, 3);
     prodName = "iPod";
+    std::string firstThreeLetters = manufacturer.substr(0, 3);
+
     std::cout << "Enter the item type\n";
     std::cout << "1. Audio\n" <<
               "2. Visual\n" <<
@@ -111,19 +97,17 @@ void produceItems() {
     }
     // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
     std::cout << "Enter the number of items that were produced\n";
-    int numProduced;
+    int numProduced, spacing;
     std::cin >> numProduced;
     std::string serialNum;
     for (int i = 1; i <= numProduced; i++) { //This loop records the production of the product
-        std::cout << "Production Number: " << i << std::flush;
-        std::cout << " Serial Number: " << std::flush;
-        std::cout.fill('0');
-        std::cout.width(6);
-        std::cout << std::left << itemTypeCode << i << std::endl;
+        serialNum = printf("Production Number: %d Serial Number: %s%s%05d\n", i, firstThreeLetters.c_str(),
+                           itemTypeCode.c_str(), i);
+        std::ofstream myOutputFile;
+        myOutputFile.open("production.txt", std::ios_base::app);
+        myOutputFile << serialNum << std::endl;
+        myOutputFile.close();
     }
-    std::ofstream myOutputFile;
-    myOutputFile.open("production.txt", std::ios_base::app);
-    myOutputFile << serialNum << std::endl;
 }
 
 std::string createAccount() {
