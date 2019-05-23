@@ -4,6 +4,7 @@
 */
 
 #ifndef PROCEDURALPROJECT_PROTOTYPES_H
+
 //prototype (gives the compiler a heads up about the upcoming function)
 //@brief Welcomes the user and shows a list
 void showMenu();
