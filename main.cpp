@@ -1,8 +1,11 @@
-/*@file main
-*@brief Integrates knowledge that I learned in COP 2001
-*@author Vladimir Hardy
-*@bugs Inputting numbers with spaces jumps through multiple cin statements. Create account doesnt work yet.
-*/
+/** @file main.cpp
+ *  @brief Integrates knowledge I learned in COP 2001.
+ *
+ *  Menu for user to select between the given options
+ *
+ *  @author Vladimir Hardy
+ *  @bug Inputting numbers with spaces jumps through multiple cin statements. Create account doesnt work yet.
+ */
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -97,12 +100,14 @@ void produceItems() {
     }
     // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
     std::cout << "Enter the number of items that were produced\n";
-    int numProduced, spacing;
+    int numProduced;
     std::cin >> numProduced;
     std::string serialNum;
     for (int i = 1; i <= numProduced; i++) { //This loop records the production of the product
-        serialNum = printf("Production Number: %d Serial Number: %s%s%05d\n", i, firstThreeLetters.c_str(),
-                           itemTypeCode.c_str(), i);
+
+        serialNum = "Production Number: Serial Number: " + std::to_string(i) + firstThreeLetters +
+                    itemTypeCode + "0000" + std::to_string(i) + "\n";
+        std::cout << serialNum << std::endl;
         std::ofstream myOutputFile;
         myOutputFile.open("production.txt", std::ios_base::app);
         myOutputFile << serialNum << std::endl;
@@ -116,14 +121,14 @@ std::string createAccount() {
     std::cin >> name;
     std::ofstream myOutputFile;
     myOutputFile.open("loginCreds.txt", std::ios_base::app);
-    myOutputFile << "User's full name: " << name << std::endl; //adding name to the file loginCreds
+    myOutputFile << name << std::endl; //adding name to the file loginCreds
     myOutputFile.close();
 
     std::cout << "Please enter a username: \n";
     std::string username;
     std::cin >> username;
     myOutputFile.open("loginCreds.txt", std::ios_base::app);
-    myOutputFile << "User's username: " << username << std::endl; //adding username to the file loginCreds
+    myOutputFile << username << std::endl; //adding username to the file loginCreds
     myOutputFile.close();
 
     std::cout << "Please enter a password: \n";
@@ -131,7 +136,7 @@ std::string createAccount() {
     std::cin >> password;
     myOutputFile.close();
     myOutputFile.open("loginCreds.txt", std::ios_base::app); //Appending password to the file loginCreds
-    myOutputFile << "User's password: " << password << std::endl;
+    myOutputFile << password << std::endl;
     return (username, password);
 }
 

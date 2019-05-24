@@ -2,6 +2,12 @@
 *  @brief Header file with prototypes
 *  @Author Vladimir Hardy
 */
+/** @file Prototypes.cpp
+ *  @brief Header file with prototypes
+ *
+ *  @author Vladimir Hardy
+ *  @bug No known bugs
+ */
 
 #ifndef PROCEDURALPROJECT_PROTOTYPES_H
 
@@ -28,7 +34,7 @@ void moviePlayer();
 //@brief Production statistics stub
 void productionStatistics();
 
-//@brief Exits the program by setting the while loop condition to false
 void exit();
+
 
 #endif //PROCEDURALPROJECT_PROTOTYPES_H
