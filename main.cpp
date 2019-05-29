@@ -9,8 +9,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <cstdio>
 #include "Prototypes.h"
+#include <vector>
 
 //Ctrl + alt +  L for code formatter
 
@@ -59,8 +61,8 @@ int main() {
 
 void showMenu() {
     std::cout
-            << "======================================================\nHello There! Please select an option below:\n======================================================\n"
-            << std::endl;
+            << "======================================================\nHello There! Please select an option below:\n"
+               "======================================================" << std::endl;
     std::cout << "Production Line Tracker\n";
     std::cout << "1. Produce Items\n" << "2. Add Employee Account\n" << "3. Add Music Player\n"
               << "4. Add Movie Player\n" << "5. Display Production Statistics\n" << "6. Exit\n";
@@ -71,12 +73,12 @@ void produceItems() {
     // For now, just have them input the information.
     std::cout << "Enter the Manufacturer\n";
     std::string manufacturer;
-    //std::cin >> manufacturer;
-    manufacturer = "Apple";
+    std::cin >> manufacturer;
+    //manufacturer = "Apple";
     std::cout << "Enter the Product Name\n";
     std::string prodName;
-    //std::cin >> prodName;
-    prodName = "iPod";
+    std::cin >> prodName;
+    //prodName = "iPod";
     std::string firstThreeLetters = manufacturer.substr(0, 3);
 
     std::cout << "Enter the item type\n";
@@ -104,9 +106,12 @@ void produceItems() {
     std::cin >> numProduced;
     std::string serialNum;
     for (int i = 1; i <= numProduced; i++) { //This loop records the production of the product
-
-        serialNum = "Production Number: Serial Number: " + std::to_string(i) + firstThreeLetters +
-                    itemTypeCode + "0000" + std::to_string(i) + "\n";
+        std::ostringstream  serialNumStream;
+        serialNumStream.width(10);
+        serialNumStream.fill('0');
+        serialNumStream << "Production Number: " << i << " Serial Number: " <<
+        firstThreeLetters  << itemTypeCode << i;
+        std::string serialNum = serialNumStream.str();
         std::cout << serialNum << std::endl;
         std::ofstream myOutputFile;
         myOutputFile.open("production.txt", std::ios_base::app);
