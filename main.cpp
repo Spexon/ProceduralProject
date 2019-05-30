@@ -7,6 +7,8 @@
  *  @bug Inputting numbers with spaces jumps through multiple cin statements. Create account doesnt work yet.
  */
 #include <iostream>
+#include <algorithm>
+#include <iomanip>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -15,6 +17,7 @@
 #include <vector>
 
 //Ctrl + alt +  L for code formatter
+//Ctrl + shift + alt + click for breakpoints
 
 int main() {
 
@@ -27,6 +30,7 @@ int main() {
         switch (number) {
             case 1: //Catalog of products being produced
                 produceItems();
+                //addToProductLine();
                 break;
             case 2:
                 std::cout << "Do you have an account? (yes or no)\n";
@@ -71,15 +75,94 @@ void showMenu() {
 void produceItems() {
     // Eventually the user will be able to choose the item to produce.
     // For now, just have them input the information.
+    // Create vectors to store product manufacturer
+
+    // a parallel vector to store product name
+    std::vector<std::string> productLineName;
+    // a parallel vector to store product item type
+    std::vector<std::string> productLineManufacturer;
+    // create vector here
+    std::vector<std::string> productLineItemType;
+    // Add three new products to the product line
+    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
+    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
+    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
+
+    // Output the products in the product line
+    std::cout << "The products in the Product Line are:\n";
+    for (int productLineItemNum = 0;productLineItemNum < 1;productLineItemNum++) {
+        std::cout << productLineManufacturer[productLineItemNum] << ", ";
+        std::cout << productLineName[productLineItemNum] << ", ";
+        std::cout << productLineItemType[productLineItemNum] << "\n";
+    }
+    //outputProductLine(productLineManufacturer, productLineName, productLineItemType);
+    outputSortedProductNames(productLineName);
+    findManufacturerOfProduct(productLineManufacturer, productLineName);
+}
+
+void outputProductLine(std::vector<std::string> productLineManufacturer,
+                       std::vector<std::string> productLineName,
+                       std::vector<std::string> productLineItemType) {
+    for (int productIndex = 0; productIndex < 3; productIndex++) {
+        std::cout << productLineManufacturer[productIndex] << ",";
+        std::cout << productLineName[productIndex] << ",";
+        std::cout << productLineItemType[productIndex] << "\n";
+    }
+}
+
+void outputSortedProductNames(std::vector<std::string> productLineNames) {
+    std:sort(productLineNames.begin(),productLineNames.end());
+    for (auto inc: productLineNames) {
+        std::cout << inc << std::endl;
+    }
+}
+
+void findManufacturerOfProduct(std::vector<std::string> productLineManufacturers,
+                               std::vector<std::string> productLineNames) {
+
+    std::cout << "Enter a product name to find the manufacturer\n";
+    std::string prodNameToFind;
+    std::cin >> prodNameToFind;
+    bool product_found;
+    int inc; //Unless there is another way to retain the increment from the loop, a global increment is used
+    for (inc = 0;inc < productLineNames.size();inc++) {
+        if (productLineNames[inc] == prodNameToFind) {
+            product_found = true;
+            break;
+        }
+        else {
+            product_found = false;
+        }
+
+    }
+    if (product_found) {
+        std::cout << "The manufacturer of that product is " << productLineManufacturers[inc] << std::endl;
+    }
+    else {
+        std::cout << "That product name was not found." << std::endl;
+    }
+}
+std::string tempCode;
+void addToProductLine(std::vector<std::string> &productLineManufacturer,
+                      std::vector<std::string> &productLineName, std::vector<std::string> &productLineItemType)
+{
+
+    std::cout << "Adding a new product to the product line\n";
+
     std::cout << "Enter the Manufacturer\n";
+    std::cin.ignore();
     std::string manufacturer;
-    std::cin >> manufacturer;
-    //manufacturer = "Apple";
+    getline(std::cin, manufacturer);
+    std::string firstThreeLetters = manufacturer.substr(0, 3);
+    // manufacturer = "MicrosoftApple";
+    // add manufacturer to the vector here
+    productLineManufacturer.push_back (manufacturer);
+
     std::cout << "Enter the Product Name\n";
     std::string prodName;
-    std::cin >> prodName;
-    //prodName = "iPod";
-    std::string firstThreeLetters = manufacturer.substr(0, 3);
+    getline(std::cin, prodName);
+    // add prodName to the vector
+    productLineName.push_back (prodName);
 
     std::cout << "Enter the item type\n";
     std::cout << "1. Audio\n" <<
@@ -100,23 +183,44 @@ void produceItems() {
     } else {
         std::cout << "Invalid Choice\n";
     }
+    productLineItemType.push_back (itemTypeCode);
+
     // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
     std::cout << "Enter the number of items that were produced\n";
     int numProduced;
     std::cin >> numProduced;
-    std::string serialNum;
-    for (int i = 1; i <= numProduced; i++) { //This loop records the production of the product
-        std::ostringstream  serialNumStream;
-        serialNumStream.width(10);
-        serialNumStream.fill('0');
-        serialNumStream << "Production Number: " << i << " Serial Number: " <<
-        firstThreeLetters  << itemTypeCode << i;
-        std::string serialNum = serialNumStream.str();
-        std::cout << serialNum << std::endl;
-        std::ofstream myOutputFile;
-        myOutputFile.open("production.txt", std::ios_base::app);
-        myOutputFile << serialNum << std::endl;
-        myOutputFile.close();
+    int serialNumIndex = 1;
+    int productNum;
+    if (itemTypeCode == tempCode) {
+        for (serialNumIndex; serialNumIndex <= numProduced; serialNumIndex++) { //This loop records the production of the product
+            std::ofstream myOutputFile;
+            myOutputFile.open("production.txt", std::ios_base::app);
+            productNum = serialNumIndex;
+            std::ostringstream  serialNumStream;
+            serialNumStream.fill('0');
+            serialNumStream << productNum << ". " << firstThreeLetters << itemTypeCode << serialNumStream.width(4) << serialNumIndex;
+            std::string serialNum = serialNumStream.str();
+            std::cout << serialNum << std::endl;
+
+            myOutputFile << serialNum << std::endl;
+            myOutputFile.close();
+        }
+    }
+    else {
+        for (serialNumIndex = 1; serialNumIndex <= numProduced; serialNumIndex++) { //This loop records the production of the product
+            std::ofstream myOutputFile;
+            myOutputFile.open("production.txt", std::ios_base::app);
+            productNum = serialNumIndex;
+            std::ostringstream  serialNumStream;
+            serialNumStream.fill('0');
+            serialNumStream << productNum << ". " << firstThreeLetters << itemTypeCode << serialNumStream.width(4) << serialNumIndex;
+            std::string serialNum = serialNumStream.str();
+            std::cout << serialNum << std::endl;
+
+            myOutputFile << serialNum << std::endl;
+            myOutputFile.close();
+        }
+        tempCode = itemTypeCode;
     }
 }
 
