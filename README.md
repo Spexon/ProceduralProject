@@ -1,3 +1,3 @@
 # ProceduralProject
 
-Repl.it link: https://repl.it/@Spexon/sandBox
+My procedural Project is a sample application that allows a company to produce items and store them in a collection, track production of their products, display the products that are able to be produced anytime, and create employee accounts. This project was created independantly by Vladimir Hardy, which integrated all the knowledge learned during COP 2001. When beginning this project, my knowledge about C++ was very limited, but as the semested progressed my grip became tighter on the language. I created this project to solidify my understanding with java (since the two programs are very similar logically), and to have fun getting new ideas for future projects. This project was mostly worked on at home; I used the time in the classroom to ask questions and improve my code when stuck at home.
