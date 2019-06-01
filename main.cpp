@@ -8,6 +8,7 @@
  */
 #include <iostream>
 #include <algorithm>
+#include <assert.h>
 #include <iomanip>
 #include <string>
 #include <fstream>
@@ -43,7 +44,7 @@ int main() {
                 }
                 break;
             case 3:
-                musicPlayer(); //STUB function
+                addItems(); //STUB function
                 break;
             case 4:
                 moviePlayer(); //STUB function
@@ -68,7 +69,7 @@ void showMenu() {
             << "======================================================\nHello There! Please select an option below:\n"
                "======================================================" << std::endl;
     std::cout << "Production Line Tracker\n";
-    std::cout << "1. Produce Items\n" << "2. Add Employee Account\n" << "3. Add Music Player\n"
+    std::cout << "1. Produce Items\n" << "2. Add Employee Account\n" << "3. Add Items\n"
               << "4. Add Movie Player\n" << "5. Display Production Statistics\n" << "6. Exit\n";
 }
 
@@ -85,33 +86,21 @@ void produceItems() {
     std::vector<std::string> productLineItemType;
     // Add three new products to the product line
     addToProductLine(productLineManufacturer, productLineName, productLineItemType);
-    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
-    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
-
     // Output the products in the product line
-    std::cout << "The products in the Product Line are:\n";
-    for (int productLineItemNum = 0;productLineItemNum < 1;productLineItemNum++) {
+    std::cout << "Saved to file" << std::endl;
+    /*std::cout << "The products in the Product Line are:\n";
+    for (int productLineItemNum = 0; productLineItemNum < 1; productLineItemNum++) {
         std::cout << productLineManufacturer[productLineItemNum] << ", ";
         std::cout << productLineName[productLineItemNum] << ", ";
         std::cout << productLineItemType[productLineItemNum] << "\n";
     }
-    //outputProductLine(productLineManufacturer, productLineName, productLineItemType);
+    outputProductLine(productLineManufacturer, productLineName, productLineItemType);*/
     outputSortedProductNames(productLineName);
     findManufacturerOfProduct(productLineManufacturer, productLineName);
 }
 
-void outputProductLine(std::vector<std::string> productLineManufacturer,
-                       std::vector<std::string> productLineName,
-                       std::vector<std::string> productLineItemType) {
-    for (int productIndex = 0; productIndex < 3; productIndex++) {
-        std::cout << productLineManufacturer[productIndex] << ",";
-        std::cout << productLineName[productIndex] << ",";
-        std::cout << productLineItemType[productIndex] << "\n";
-    }
-}
-
 void outputSortedProductNames(std::vector<std::string> productLineNames) {
-    std:sort(productLineNames.begin(),productLineNames.end());
+    sort(productLineNames.begin(), productLineNames.end());
     for (auto inc: productLineNames) {
         std::cout << inc << std::endl;
     }
@@ -125,27 +114,24 @@ void findManufacturerOfProduct(std::vector<std::string> productLineManufacturers
     std::cin >> prodNameToFind;
     bool product_found;
     int inc; //Unless there is another way to retain the increment from the loop, a global increment is used
-    for (inc = 0;inc < productLineNames.size();inc++) {
+    for (inc = 0; inc < productLineNames.size(); inc++) {
         if (productLineNames[inc] == prodNameToFind) {
             product_found = true;
             break;
-        }
-        else {
+        } else {
             product_found = false;
         }
 
     }
     if (product_found) {
         std::cout << "The manufacturer of that product is " << productLineManufacturers[inc] << std::endl;
-    }
-    else {
+    } else {
         std::cout << "That product name was not found." << std::endl;
     }
 }
-std::string tempCode;
+
 void addToProductLine(std::vector<std::string> &productLineManufacturer,
-                      std::vector<std::string> &productLineName, std::vector<std::string> &productLineItemType)
-{
+                      std::vector<std::string> &productLineName, std::vector<std::string> &productLineItemType) {
 
     std::cout << "Adding a new product to the product line\n";
 
@@ -156,14 +142,12 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
     std::string firstThreeLetters = manufacturer.substr(0, 3);
     // manufacturer = "MicrosoftApple";
     // add manufacturer to the vector here
-    productLineManufacturer.push_back (manufacturer);
-
+    productLineManufacturer.push_back(manufacturer);
     std::cout << "Enter the Product Name\n";
     std::string prodName;
     getline(std::cin, prodName);
     // add prodName to the vector
-    productLineName.push_back (prodName);
-
+    productLineName.push_back(prodName);
     std::cout << "Enter the item type\n";
     std::cout << "1. Audio\n" <<
               "2. Visual\n" <<
@@ -182,46 +166,119 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
         itemTypeCode = "VM";
     } else {
         std::cout << "Invalid Choice\n";
+        itemTypeCode = "N/A";
     }
-    productLineItemType.push_back (itemTypeCode);
+    productLineItemType.push_back(itemTypeCode);
 
     // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
     std::cout << "Enter the number of items that were produced\n";
     int numProduced;
     std::cin >> numProduced;
-    int serialNumIndex = 1;
-    int productNum;
-    if (itemTypeCode == tempCode) {
-        for (serialNumIndex; serialNumIndex <= numProduced; serialNumIndex++) { //This loop records the production of the product
-            std::ofstream myOutputFile;
-            myOutputFile.open("production.txt", std::ios_base::app);
-            productNum = serialNumIndex;
-            std::ostringstream  serialNumStream;
-            serialNumStream.fill('0');
-            serialNumStream << productNum << ". " << firstThreeLetters << itemTypeCode << serialNumStream.width(4) << serialNumIndex;
-            std::string serialNum = serialNumStream.str();
-            std::cout << serialNum << std::endl;
-
-            myOutputFile << serialNum << std::endl;
-            myOutputFile.close();
-        }
+    int serialNumIndex;
+    int counter = 1;
+    std::ifstream myInputFile;
+    myInputFile.open("production.txt", std::ios_base::app);
+    std::string lineToChange;
+    while (getline(myInputFile, lineToChange)) {  //if not at end of file, continue reading numbers
+        std::istringstream(lineToChange, counter);
+        counter++;
     }
-    else {
-        for (serialNumIndex = 1; serialNumIndex <= numProduced; serialNumIndex++) { //This loop records the production of the product
-            std::ofstream myOutputFile;
-            myOutputFile.open("production.txt", std::ios_base::app);
-            productNum = serialNumIndex;
-            std::ostringstream  serialNumStream;
-            serialNumStream.fill('0');
-            serialNumStream << productNum << ". " << firstThreeLetters << itemTypeCode << serialNumStream.width(4) << serialNumIndex;
-            std::string serialNum = serialNumStream.str();
-            std::cout << serialNum << std::endl;
-
-            myOutputFile << serialNum << std::endl;
-            myOutputFile.close();
-        }
-        tempCode = itemTypeCode;
+    myInputFile.close();
+    int curLineMM = 0, curLineVI = 0, curLineAM = 0, curLineVM = 0;
+    std::vector<std::string> serialNumVector;
+    std::ofstream myOutputFile;
+    myOutputFile.open("production.txt", std::ios_base::app);
+    for (serialNumIndex = 1;
+         serialNumIndex <= numProduced; serialNumIndex++) { //This loop records the production of the product
+        std::ostringstream serialNumStream;
+        /*if (checkWord("production.txt", "MM")) {
+            while (getline(myInputFile, itemTypeCode)) {
+                curLineMM++;
+                std::cout << curLineMM << std::endl;
+                if ((itemTypeCode.find(itemTypeCode, 0)) != std::string::npos) {
+                    serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                    << std::setw(4) << curLineMM;
+                    serialNumVector.push_back(serialNumStream.str());
+                    std::cout << serialNumVector[curLineMM] << std::endl;
+                    myOutputFile << serialNumVector[curLineMM] << std::endl;
+                    counter++;
+                }
+            }
+        } else if (checkWord("production.txt", "VI")) {
+            while (getline(myInputFile, itemTypeCode)) {
+                curLineVI++;
+                if ((itemTypeCode.find(itemTypeCode, 0)) != std::string::npos) {
+                    serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                    << std::setw(4) << curLineVI;
+                    serialNumVector.push_back(serialNumStream.str());
+                    std::cout << serialNumVector[curLineVI] << std::endl;
+                    myOutputFile << serialNumVector[curLineVI] << std::endl;
+                    counter++;
+                }
+            }
+        } else if (checkWord("production.txt", "AM")) {
+            while (getline(myInputFile, itemTypeCode)) {
+                curLineAM++;
+                if ((itemTypeCode.find(itemTypeCode, 0)) != std::string::npos) {
+                    serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode
+                                    << serialNumStream.fill('0')
+                                    << std::setw(4) << curLineAM;
+                    serialNumVector.push_back(serialNumStream.str());
+                    std::cout << serialNumVector[curLineAM] << std::endl;
+                    myOutputFile << serialNumVector[curLineAM] << std::endl;
+                    counter++;
+                }
+            }
+        } else if (checkWord("production.txt", "VM")) {
+            while (getline(myInputFile, itemTypeCode)) {
+                curLineVM++;
+                if ((itemTypeCode.find(itemTypeCode, 0)) != std::string::npos) {
+                    serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode
+                                    << serialNumStream.fill('0')
+                                    << std::setw(4) << curLineVM;
+                    serialNumVector.push_back(serialNumStream.str());
+                    std::cout << serialNumVector[curLineVM ] << std::endl;
+                    myOutputFile << serialNumVector[curLineVM] << std::endl;
+                    counter++;
+                }
+            }
+        } else {
+            serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                            << std::setw(4) << serialNumIndex;
+            serialNumVector.push_back(serialNumStream.str());
+            std::cout << serialNumVector[serialNumIndex - 1] << std::endl;
+            myOutputFile << serialNumVector[serialNumIndex - 1] << std::endl;
+            counter++;
+        }*/
+        serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                        << std::setw(4) << serialNumIndex;
+        serialNumVector.push_back(serialNumStream.str());
+        std::cout << serialNumVector[serialNumIndex - 1] << std::endl;
+        myOutputFile << serialNumVector[serialNumIndex - 1] << std::endl;
+        counter++;
+        myOutputFile.close();
     }
+}
+
+bool checkWord(std::string fileName, std::string search) {
+
+    std::string line;
+    std::ifstream myFile;
+    myFile.open("production.txt");
+    if (myFile.is_open()) {
+        while (!myFile.eof()) {
+            getline(myFile, line);
+            if ((line.find(search, 0)) != std::string::npos) {
+                //std::cout << "found '" << search << " \n"<< line  <<std::endl;
+                return true;
+            } else {
+                //std::cout << "Not found \n";
+            }
+        }
+        myFile.close();
+    } else
+        std::cout << "Unable to open this file." << std::endl;
+    return false;
 }
 
 std::string createAccount() {
@@ -273,8 +330,14 @@ void employeeAccount() {
     } else std::cout << "Unable to open file" << std::endl;
 }
 
-void musicPlayer() {
-    std::cout << "FIXME" << std::endl;
+void addItems() {
+    std::vector<std::string> productLineManufacturer;
+    std ::vector<std::string> productLineName;
+    std::vector<std::string> productLineItemType;
+
+    std::cout << "The products in the Product Line are:\n";
+    outputSortedProductNames(productLineName);
+    findManufacturerOfProduct(productLineManufacturer, productLineName);
 }
 
 void moviePlayer() {

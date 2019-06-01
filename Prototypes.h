@@ -1,13 +1,10 @@
-/* @file Prototypes
-*  @brief Header file with prototypes
-*  @Author Vladimir Hardy
-*/
 /** @file Prototypes.cpp
  *  @brief Header file with prototypes
  *
  *  @author Vladimir Hardy
  *  @bug No known bugs
  */
+#include <vector>
 
 #ifndef PROCEDURALPROJECT_PROTOTYPES_H
 
@@ -18,6 +15,16 @@ void showMenu();
 //@brief Allows the user to produce and track items they've created
 void produceItems();
 
+//@brief adds new product items to their vectors
+void addToProductLine(std::vector<std::string>&, std::vector<std::string>&,
+                      std::vector<std::string>&);
+
+bool checkWord(std::string fileName, std::string search);
+
+void outputSortedProductNames(std::vector<std::string>);
+
+void findManufacturerOfProduct(std::vector<std::string>, std::vector<std::string>);
+
 //@brief Creates a new account for the user and saves info into loginCreds.txt
 //@return Username, password
 std::string createAccount();
@@ -25,8 +32,7 @@ std::string createAccount();
 //@brief Allows the user to login to their existing account
 void employeeAccount();
 
-//@brief Music player stub
-void musicPlayer();
+void addItems();
 
 //@brief Movie Player stub
 void moviePlayer();
