@@ -316,11 +316,13 @@ void createAccount() {
     userName = firstName[0] + lastName.substr(0, lastName.length());
     std::transform(userName.begin(), userName.end(), userName.begin(), ::tolower);
     std::cout << "Your username is: " << userName << std::endl;
+    userName = encryptString(userName);
 
     std::cout << "Please enter a password, it must contain at least: one digit, one lowercase letter, "
                  "and one uppercase letter.\nThe password cannot contain a space or any other symbols: \n";
     std::string password;
     std::cin >> password;
+    password = encryptString(password);
     bool valid = false;
     for (int i = 0; i < password.length(); i++) {
         if (isupper(password[i])) {
@@ -353,17 +355,25 @@ void createAccount() {
     }
 }
 
+std::string encryptString(std::string str) {
+    if (str.length() == 1) {
+        return str;
+    } else {
+        return char((int) str[0] + 3) + encryptString(str.substr(1, str.length() - 1));
+    }
+}
+
 void employeeAccount() {
     std::ifstream myInputFile("loginCreds.txt");
     if (myInputFile.is_open()) {
         std::cout << "Enter your username below:" << std::endl;
         std::string username;
         std::cin >> username;
-        if (checkWord("loginCreds.txt", username)) {
+        if (checkWord("loginCreds.txt", encryptString(username))) {
             std::cout << "Enter your password below:" << std::endl;
             std::string password;
             std::cin >> password;
-            if (checkWord("loginCreds.txt", password)) {
+            if (checkWord("loginCreds.txt", encryptString(username))) {
                 std::cout << "Login Successful!" << std::endl;
             } else {
                 std::cout << "Login Failed!" << std::endl;

@@ -30,6 +30,8 @@ void findManufacturerOfProduct(std::vector<std::string>, std::vector<std::string
 //@return Username, password
 void createAccount();
 
+std::string encryptString(std::string);
+
 //@brief Allows the user to login to their existing account
 void employeeAccount();
 
