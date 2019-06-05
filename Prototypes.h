@@ -13,7 +13,8 @@
 void showMenu();
 
 //@brief Allows the user to produce and track items they've created
-void produceItems();
+void produceItems(std::vector<std::string>&productLineManufacturer, std::vector<std::string>&productLineName,
+                  std::vector<std::string>&productLineItemType);
 
 //@brief adds new product items to their vectors
 void addToProductLine(std::vector<std::string>&, std::vector<std::string>&,
@@ -27,15 +28,13 @@ void findManufacturerOfProduct(std::vector<std::string>, std::vector<std::string
 
 //@brief Creates a new account for the user and saves info into loginCreds.txt
 //@return Username, password
-std::string createAccount();
+void createAccount();
 
 //@brief Allows the user to login to their existing account
 void employeeAccount();
 
-void addItems();
-
-//@brief Movie Player stub
-void moviePlayer();
+void addItems(std::vector<std::string>&, std::vector<std::string>&,
+              std::vector<std::string>&);
 
 //@brief Production statistics stub
 void productionStatistics();
