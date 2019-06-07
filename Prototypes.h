@@ -17,8 +17,6 @@ void produceItems(std::vector<std::string>&productLineManufacturer, std::vector<
                   std::vector<std::string>&productLineItemType);
 
 //@brief adds new product items to their vectors
-void addToProductLine(std::vector<std::string>&, std::vector<std::string>&,
-                      std::vector<std::string>&);
 
 bool checkWord(std::string fileName, std::string search);
 

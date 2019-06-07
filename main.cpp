@@ -111,7 +111,7 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
     for (serialNumIndex = 0;
          serialNumIndex < numProduced; serialNumIndex++) { //This loop records the production of the product
         std::ostringstream serialNumStream;
-        if (checkWord("production.txt", "MM")) {
+        /*if (checkWord("production.txt", "MM")) {
 
                 curLineMM++;
                 std::cout << curLineMM << std::endl;
@@ -169,14 +169,14 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
             std::cout << serialNumVector[serialNumIndex] << std::endl;
             myOutputFile << serialNumVector[serialNumIndex] << std::endl;
             counter++;
-        }
+        }*/
 
-        /*serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+        serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
                         << std::setw(5) << serialNumIndex;
         serialNumVector.push_back(serialNumStream.str());
         std::cout << serialNumVector[serialNumIndex] << std::endl;
         myOutputFile << serialNumVector[serialNumIndex] << std::endl;
-        counter++;*/
+        counter++;
     }
     myOutputFile.close();
 
@@ -223,13 +223,6 @@ void findManufacturerOfProduct(std::vector<std::string> productLineManufacturers
 void addItems(std::vector<std::string> &productLineManufacturer, std::vector<std::string> &productLineName,
               std::vector<std::string> &productLineItemType) {
     // Add three new products to the product line
-    addToProductLine(productLineManufacturer, productLineName, productLineItemType);
-    std::cout << "Saved to file" << std::endl;
-}
-
-void addToProductLine(std::vector<std::string> &productLineManufacturer,
-                      std::vector<std::string> &productLineName, std::vector<std::string> &productLineItemType) {
-
     std::cout << "Adding a new product to the product line\n";
 
     std::cout << "Enter the Manufacturer\n";
@@ -253,11 +246,16 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
     int itemTypeChoice;
     std::cin >> itemTypeChoice;
     std::string itemTypeCode;
+    std::ofstream myOutputFile;
+    myOutputFile.open("counters.txt",std::ios_base::app);
+    myOutputFile << "test1" << curLineMM << std::endl;
     if (itemTypeChoice == 1) {
         itemTypeCode = "MM";
         curLineMM++;
+
     } else if (itemTypeChoice == 2) {
         itemTypeCode = "VI";
+
         curLineVI++;
     } else if (itemTypeChoice == 3) {
         itemTypeCode = "AM";
@@ -276,7 +274,7 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
     int counter;
     counter = 1;
     std::ifstream myInputFile;
-    std::ofstream myOutputFile;
+
     std::string lineToChange;
     myInputFile.open("catalog.txt", std::ios_base::app);
     while (getline(myInputFile, lineToChange)) {  //if not at end of file, continue reading numbers
@@ -287,6 +285,7 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
     myOutputFile.open("catalog.txt", std::ios_base::app);
     myOutputFile << counter << ". " << manufacturer << ", " << prodName << ", " << itemTypeCode << std::endl;
     myOutputFile.close();
+    std::cout << "Saved to file" << std::endl;
 }
 
 bool checkWord(std::string fileName, std::string search) {
