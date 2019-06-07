@@ -111,7 +111,7 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
     for (serialNumIndex = 0;
          serialNumIndex < numProduced; serialNumIndex++) { //This loop records the production of the product
         std::ostringstream serialNumStream;
-        /*if (checkWord("production.txt", "MM")) {
+        if (checkWord("production.txt", "MM")) {
 
                 curLineMM++;
                 std::cout << curLineMM << std::endl;
@@ -169,14 +169,14 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
             std::cout << serialNumVector[serialNumIndex] << std::endl;
             myOutputFile << serialNumVector[serialNumIndex] << std::endl;
             counter++;
-        }*/
+        }
 
-        serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+        /*serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
                         << std::setw(5) << serialNumIndex;
         serialNumVector.push_back(serialNumStream.str());
         std::cout << serialNumVector[serialNumIndex] << std::endl;
         myOutputFile << serialNumVector[serialNumIndex] << std::endl;
-        counter++;
+        counter++;*/
     }
     myOutputFile.close();
 
@@ -255,13 +255,16 @@ void addToProductLine(std::vector<std::string> &productLineManufacturer,
     std::string itemTypeCode;
     if (itemTypeChoice == 1) {
         itemTypeCode = "MM";
-
+        curLineMM++;
     } else if (itemTypeChoice == 2) {
         itemTypeCode = "VI";
+        curLineVI++;
     } else if (itemTypeChoice == 3) {
         itemTypeCode = "AM";
+        curLineAM++;
     } else if (itemTypeChoice == 4) {
         itemTypeCode = "VM";
+        curLineVM++;
     } else {
         std::cout << "Invalid Choice\n";
         itemTypeCode = "N/A";
