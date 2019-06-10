@@ -320,40 +320,36 @@ void createAccount() {
     std::cout << "Your username is: " << userName << std::endl;
     userName = encryptString(userName);
 
-    std::cout << "Please enter a password, it must contain at least: one digit, one lowercase letter, "
-                 "and one uppercase letter.\nThe password cannot contain a space or any other symbols: \n";
-    std::string password;
-    std::cin >> password;
-    password = encryptString(password);
-    bool valid = false;
-    for (int i = 0; i < password.length(); i++) {
-        if (isupper(password[i])) {
-            for (int i = 0; i < password.length(); i++) {
-                if (islower(password[i])) {
-                    for (int i = 0; i < password.length(); i++) {
-                        if (!isspace(password[i])) {
-                            for (int i = 0; i < password.length(); i++) {
-                                if (isdigit(password[i])) {
-                                    for (int i = 0; i < password.length(); i++) {
-                                        if (isalnum(password[i])) {
-                                            valid = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    bool tryAgain = true;
+    while (tryAgain) {
+        std::cout << "Please enter a password, it must contain at least: one digit, one lowercase letter, "
+                     "and one uppercase letter.\nThe password cannot contain a space or any other symbols: \n";
+        std::string password;
+        std::cin >> password;
+        password = encryptString(password);
+        bool upper = false;
+        bool lower = false;
+        bool digit = false;
+        bool space = false;
+        for (int i = 0; i < password.length(); i++) {
+            if (isupper(password[i]))
+                upper = true;
+            if (islower(password[i]))
+                lower = true;
+            if (!isspace(password[i]))
+                space = true;
+            if (isdigit(password[i]))
+                digit = true;
         }
-    }
-    if (valid) {
-        std::ofstream myOutputFile;
-        myOutputFile.open("loginCreds.txt", std::ios_base::app);
-        myOutputFile << userName << " " << password << std::endl; //adding name to the file loginCreds
-        myOutputFile.close();
-    } else {
-        std::cout << "Invalid password" << std::endl;
+        if (upper && lower && space && digit) {
+            std::ofstream myOutputFile;
+            myOutputFile.open("loginCreds.txt", std::ios_base::app);
+            myOutputFile << userName << " " << password << std::endl; //adding name to the file loginCreds
+            myOutputFile.close();
+            tryAgain = false;
+        } else {
+            std::cout << "Invalid password" << std::endl;
+        }
     }
 }
 
