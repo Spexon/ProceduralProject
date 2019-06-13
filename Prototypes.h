@@ -4,7 +4,6 @@
  *  @author Vladimir Hardy
  *  @bug No known bugs
  */
-#include <vector>
 
 #ifndef PROCEDURALPROJECT_PROTOTYPES_H
 
@@ -13,12 +12,12 @@
 void showMenu();
 
 //@brief Allows the user to produce and track items they've created
-void produceItems(std::vector<std::string>&productLineManufacturer, std::vector<std::string>&productLineName,
-                  std::vector<std::string>&productLineItemType);
+void produceItems(std::vector<std::string> &, std::vector<std::string> &, std::vector<std::string> &,
+                  std::vector<std::string> &);
 
 //@brief adds new product items to their vectors
 
-bool checkWord(std::string fileName, std::string search);
+bool checkWord(std::string, std::string);
 
 void outputSortedProductNames(std::vector<std::string>);
 
@@ -33,8 +32,14 @@ std::string encryptString(std::string);
 //@brief Allows the user to login to their existing account
 void employeeAccount();
 
-void addItems(std::vector<std::string>&, std::vector<std::string>&,
-              std::vector<std::string>&);
+void addItems(std::vector<Products> &);
+
+void
+loadVectors(std::vector<Products> &, std::vector<std::string> &, std::vector<std::string> &, std::vector<std::string> &,
+            std::vector<std::string> &,
+            std::vector<int> &, std::vector<int> &, std::vector<int> &, std::vector<int> &);
+
+std::pair<bool, int > findInVector(const std::vector<std::string>  &, std::string &);
 
 //@brief Production statistics stub
 void productionStatistics();
