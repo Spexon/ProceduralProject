@@ -5,8 +5,10 @@ My procedural Project is a sample application that allows a company to produce i
 ## Demonstration
 ![Sample Gif](https://gyazo.com/a3a1a21451692ebd6c7bc0af30c4a237.gif)
 
-## Getting Started
+## Documentation
+Used doxygen style comments: https://www.cs.cmu.edu/~410/doc/doxygen.html
 
+## Getting Started
 
 
 ## Built With
