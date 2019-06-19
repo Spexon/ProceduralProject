@@ -4,7 +4,7 @@
  *  Menu for user to select between the given options
  *
  *  @author Vladimir Hardy
- *  @bug Switch cases break when a non-numeric value is used. Cannot use minGW compiler without code breaking.
+ *  @bug no known bugs
  */
 #include <iostream>
 #include <vector>
@@ -22,16 +22,14 @@ struct Products {
     std::string prodName;
     std::string itemTypeCode;
     std::string comma;
-    std::string period;
-
 };
 
 struct Counters {
-    int counter;
-    std::vector<int> curLineMM;
-    std::vector<int> curLineVI;
-    std::vector<int> curLineAM;
-    std::vector<int> curLineVM;
+    int counter = 0;
+    int curLineMM = 0;
+    int curLineVI = 0;
+    int curLineAM = 0;
+    int curLineVM = 0;
 };
 
 #include "Prototypes.h"
@@ -39,14 +37,14 @@ struct Counters {
 //Ctrl + alt +  L for code formatter
 //Ctrl + shift + alt + click for breakpoints
 
+/**
+ * @brief Main function that calls other functions in a switch case statement
+ */
 int main() {
     Counters newCounter;
     std::vector<std::string> productionLog;
-    std::vector<Products> catalogVectorStruct;
-    std::vector<std::string> productLineManufacturer;
     std::vector<std::string> productLineName;
-    std::vector<std::string> productLineItemType;
-    loadVectors(catalogVectorStruct, productLineManufacturer, productionLog, productLineName, productLineItemType,
+    loadVectors(productionLog, productLineName,
                 newCounter.curLineMM, newCounter.curLineVI, newCounter.curLineAM, newCounter.curLineVM);
     bool reRun = true;
     while (reRun) {
@@ -63,19 +61,19 @@ int main() {
         }
         switch (number) {
             case 1: //Catalog of products being produced
-                produceItems(productLineManufacturer, productLineName, productLineItemType, productionLog);
+                produceItems(productLineName, productionLog);
                 break;
             case 2:
                 createAccount();
                 break;
             case 3:
-                addItems(catalogVectorStruct);
+                addItems(productLineName);
                 break;
             case 4:
                 employeeAccount();
                 break;
             case 5:
-                productionStatistics(); //STUB function
+                productionStatistics(productionLog, productLineName);
                 break;
             case 6:
                 exit(); //Exit the switch statement
@@ -83,13 +81,15 @@ int main() {
                 break;
             default: //Default statement if the user gives bad input
                 std::cout << "Invalid selection, please type a number within the given range" << std::endl;
-
                 break;
         }
     }
     return 0;
 }
 
+/** @brief Prints a selection menu to console
+ *
+ */
 void showMenu() {
     std::cout
             << "======================================================\nHello There! Please select an option below:\n"
@@ -99,10 +99,22 @@ void showMenu() {
               << "4. Log In\n" << "5. Display Production Statistics\n" << "6. Exit\n";
 }
 
-void produceItems(std::vector<std::string> &productLineManufacturer, std::vector<std::string> &productLineName,
-                  std::vector<std::string> &productLineItemType, std::vector<std::string> &productionLog) {
+/**
+ * @brief Allows the user to catalog their produced items
+ * @param productLineName Vector with items that can be produced
+ * @param productionLog Vector with saved products that have already been produced
+ */
+void produceItems(std::vector<std::string> &productLineName,
+                  std::vector<std::string> &productionLog) {
     bool reTry = true;
     while (reTry) {
+        std::ifstream myInputFile;
+        myInputFile.open("ProductLine.csv");
+        if (isEmpty(myInputFile)) {
+            std::cout << "Please add to the product line before producing" << std::endl;
+            break;
+        }
+        myInputFile.close();
         std::cout << "The products in the Product Line are:\n";
         outputSortedProductNames(productLineName);
         int produceItemNum;
@@ -120,9 +132,7 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
             std::cout << "Invalid selection, please type a number\n";
             continue;
         }
-
         int counter = 1;
-        std::ifstream myInputFile;
         myInputFile.open("ProductionLog.csv", std::ios_base::app);
         std::string lineToChange;
         while (getline(myInputFile, lineToChange)) {  //if not at end of file, continue reading numbers
@@ -139,48 +149,86 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
         while (getline(myInputFile, lineToChange)) { //gets stuff between counter and serial num
             if (counter2 == produceItemNum) {
                 std::istringstream iss(lineToChange);
-                firstThreeLetters = lineToChange.substr(2, 3);
+                firstThreeLetters = lineToChange.substr(0, 3);
                 itemTypeCode = lineToChange.substr(lineToChange.length() - 2, 2);
             }
             counter2++;
         }
         myInputFile.close();
         int serialNumIndex;
+        std::ofstream outputToFile;
+        std::ifstream inputFromFile;
+        Counters newCounter;
+        inputFromFile.open("CounterVM.csv");
+        while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+            inputFromFile >> lineToChange;
+            newCounter.curLineVM = stoi(lineToChange);
+        }
+        inputFromFile.close();
+        inputFromFile.open("CounterAM.csv");
+        while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+            inputFromFile >> lineToChange;
+            newCounter.curLineAM = stoi(lineToChange);
+        }
+
+        inputFromFile.close();
+        inputFromFile.open("CounterMM.csv");
+        while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+            inputFromFile >> lineToChange;
+            newCounter.curLineMM = stoi(lineToChange);
+        }
+        inputFromFile.close();
+        inputFromFile.open("CounterVI.csv");
+        while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+            inputFromFile >> lineToChange;
+            newCounter.curLineVI = stoi(lineToChange);
+        }
+        inputFromFile.close();
         myOutputFile.open("ProductionLog.csv", std::ios_base::app);
+
         for (serialNumIndex = 0;
              serialNumIndex < numProduced; serialNumIndex++) { //This loop records the production of the product
             std::ostringstream serialNumStream;
-            Counters newCounter;
             newCounter.counter = 1;
-            if (produceItemNum == std::stoi(productLineName[produceItemNum - 1].substr(0, 1))) {
-                newCounter.counter += serialNumIndex;
-                if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2, 2) ==
-                    "MM") {
-                    auto it = std::find(productionLog.begin(), productionLog.end(), "MM");
-                    int result;
-                    if (it != productionLog.end()) { //Does not recognize MM
-                        result = distance(productionLog.begin(), it);
-                        std::cout << result << std::endl;
-                    } else {
-                        result = -1;
-                    }
-                    newCounter.curLineMM.emplace_back(newCounter.counter);
-                    //findInVector(newCounter.curLineMM,"MM");
-                } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
-                                                                      2) == "VI") {
-                    newCounter.curLineVI.emplace_back(newCounter.counter);
-                } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
-                                                                      2) == "AM") {
-                    newCounter.curLineMM.emplace_back(newCounter.counter);
-                } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
-                                                                      2) == "VM") {
-                    newCounter.curLineMM.emplace_back(newCounter.counter);
-                } else
-                    std::cout << "N/A\n";
-            }
-            serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
-                            << std::setw(5) << newCounter.counter;
-            serialNumVector.push_back(serialNumStream.str());
+            if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2, 2) ==
+                "MM") { //Looks for MM in a line like this: 22. AmaMM 00001
+                outputToFile.open("CounterMM.csv"); //Cannot have multiple files open at the same time
+                serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                << std::setw(5) << newCounter.curLineMM;
+                serialNumVector.push_back(serialNumStream.str());
+                newCounter.curLineMM++;
+                outputToFile << "\n" << newCounter.curLineMM;
+                outputToFile.close();
+            } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
+                                                                  2) == "VI") {
+                outputToFile.open("CounterVI.csv");
+                serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                << std::setw(5) << newCounter.curLineVI;
+                serialNumVector.push_back(serialNumStream.str());
+                newCounter.curLineVI++;
+                outputToFile << "\n" << newCounter.curLineVI;
+                outputToFile.close();
+            } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
+                                                                  2) == "AM") {
+                outputToFile.open("CounterAM.csv");
+                serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                << std::setw(5) << newCounter.curLineAM;
+                serialNumVector.push_back(serialNumStream.str());
+                newCounter.curLineAM++;
+                outputToFile << "\n" << newCounter.curLineAM;
+                outputToFile.close();
+            } else if (productLineName[produceItemNum - 1].substr(productLineName[produceItemNum - 1].length() - 2,
+                                                                  2) == "VM") {
+                outputToFile.open("CounterVM.csv");
+                serialNumStream << counter << ". " << firstThreeLetters << itemTypeCode << serialNumStream.fill('0')
+                                << std::setw(5) << newCounter.curLineVM;
+                serialNumVector.push_back(serialNumStream.str());
+                newCounter.curLineVM++;
+                outputToFile << "\n" << newCounter.curLineVM;
+                outputToFile.close();
+            } else
+                std::cout << "N/A\n";
+
             std::cout << serialNumVector[serialNumIndex] << std::endl;
             myOutputFile << serialNumVector[serialNumIndex] << std::endl;
             counter++;
@@ -190,50 +238,35 @@ void produceItems(std::vector<std::string> &productLineManufacturer, std::vector
     }
 }
 
+/**
+ * @brief Sorts and outputs products from the ProductLine file
+ * @param productLineName Vector with items that can be produced
+ */
 void outputSortedProductNames(std::vector<std::string> productLineName) {
+    std::ofstream myOutputFile;
+    myOutputFile.open("ProductLine.csv");
     sort(productLineName.begin(), productLineName.end());
-    for (auto inc: productLineName) {
-        std::cout << inc << std::endl;
+    for (int inc = 0; inc < productLineName.size(); inc++) {
+        myOutputFile << productLineName[inc] << std::endl;
+        std::cout << inc + 1 << ". " << productLineName[inc] << std::endl;
     }
+    myOutputFile.close();
 }
 
-void findManufacturerOfProduct(std::vector<std::string> productLineManufacturers,
-                               std::vector<std::string> productLineName) {
-
-    std::cout << "Enter a product name to find the manufacturer\n";
-    std::string prodNameToFind;
-    std::cin >> prodNameToFind;
-    bool product_found;
-    int inc; //Unless there is another way to retain the increment from the loop, a global increment is used
-    for (inc = 0; inc < productLineName.size(); inc++) {
-        if (productLineName[inc] == prodNameToFind) {
-            product_found = true;
-            break;
-        } else {
-            product_found = false;
-        }
-    }
-    if (product_found) {
-        std::cout << "The manufacturer of that product is " << productLineManufacturers[inc] << std::endl;
-    } else {
-        std::cout << "That product name was not found." << std::endl;
-    }
-}
-
-void addItems(std::vector<Products> &catalogVectorStruct) {
+/**
+ * @brief Allows the user to add new products to the production line
+ * @param productLineName Vector with items that can be produced
+ */
+void addItems(std::vector<std::string> &productLineName) {
     // Add three new products to the product line
     std::cout << "Adding a new product to the product line\nEnter the Manufacturer\n";
     std::cin.ignore();
     Products newItem;
     getline(std::cin, newItem.manufacturer);
 
-    // manufacturer = "MicrosoftApple";
-    // add manufacturer to the vector here
-
     std::cout << "Enter the Product Name\n";
     std::string prodName;
     getline(std::cin, newItem.prodName);
-    // add prodName to the vector
 
     bool reTry = true;
     while (reTry) {
@@ -276,20 +309,26 @@ void addItems(std::vector<Products> &catalogVectorStruct) {
         }
         myInputFile.close();
         newItem.comma = ",";
-        newItem.period = ".";
         std::ofstream myOutputFile;
         myOutputFile.open("ProductLine.csv", std::ios_base::app);
         std::stringstream catalogStream;
-        catalogStream << newCounter.counter << newItem.period << newItem.manufacturer <<
+        catalogStream << newItem.manufacturer <<
                       newItem.comma << newItem.prodName << newItem.comma << newItem.itemTypeCode;
-        catalogVectorStruct.emplace_back(newItem);
+        productLineName.emplace_back(catalogStream.str());
         myOutputFile << catalogStream.str() << std::endl;
+
         myOutputFile.close();
         std::cout << "Saved to file" << std::endl;
         reTry = false;
     }
 }
 
+/**
+ * @brief Finds a certain word from a specified file and returns true if word is found or false if not
+ * @param fileName file which you want to find a word in
+ * @param search Word that you want to find in the file
+ * @return true or false, depending if the word is found
+ */
 bool checkWord(std::string fileName, std::string search) {
     std::string line;
     std::ifstream myFile;
@@ -310,6 +349,9 @@ bool checkWord(std::string fileName, std::string search) {
     return false;
 }
 
+/**
+ * @brief creates an account for a user, encrypts, and saves to a file. Also checks password strength
+ */
 void createAccount() {
     std::cout << "Please enter your first and last name\n";
     std::string firstName;
@@ -352,6 +394,11 @@ void createAccount() {
     }
 }
 
+/**
+ * @brief Encrypts the string that gets passed in
+ * @param str any type of string
+ * @return the encrypted string
+ */
 std::string encryptString(std::string str) {
     if (str.length() == 1) {
         return str;
@@ -360,6 +407,9 @@ std::string encryptString(std::string str) {
     }
 }
 
+/**
+ * @breif Allows the user to log in, if their credentials are correct
+ */
 void employeeAccount() {
     std::ifstream myInputFile("loginCreds.txt");
     if (myInputFile.is_open()) {
@@ -370,7 +420,7 @@ void employeeAccount() {
             std::cout << "Enter your password below:" << std::endl;
             std::string password;
             std::cin >> password;
-            if (checkWord("loginCreds.txt", encryptString(username))) {
+            if (checkWord("loginCreds.txt", encryptString(password))) {
                 std::cout << "Login Successful!" << std::endl;
             } else {
                 std::cout << "Login Failed!" << std::endl;
@@ -383,11 +433,19 @@ void employeeAccount() {
     myInputFile.close();
 }
 
-void loadVectors(std::vector<Products> &catalogVectorStruct, std::vector<std::string> &productLineManufacturer,
-                 std::vector<std::string> &productionLog, std::vector<std::string> &productLineName,
-                 std::vector<std::string> &productLineItemType, std::vector<int> &curLineMM,
-                 std::vector<int> &curLineVI,
-                 std::vector<int> &curLineAM, std::vector<int> &curLineVM) { //Call at beginning of the program
+/**
+ * @brief Gets all important information from files and saves them to vectors
+ * @param catalogVectorStruct A vector of type Products (struct)
+ * @param productLineName Vector with items that can be produced
+ * @param productionLog Vector with saved products that have already been produced
+ * @param curLineMM A counter for type MM in a struct
+ * @param curLineVI A counter for type VI in a struct
+ * @param curLineAM A counter for type AM in a struct
+ * @param curLineVM A counter for type VM in a struct
+ */
+void loadVectors(std::vector<std::string> &productionLog, std::vector<std::string> &productLineName,
+                 int &curLineMM, int &curLineVI, int &curLineAM,
+                 int &curLineVM) { //Call at beginning of the program
     std::ifstream myInputFile;
     myInputFile.open("ProductLine.csv");
     std::string lineToChange;
@@ -403,27 +461,125 @@ void loadVectors(std::vector<Products> &catalogVectorStruct, std::vector<std::st
         productionLog.emplace_back(lineToChange);
         inc++;
     }
-
 }
 
-std::pair<bool, int> findInVector(const std::vector<std::string> &productionLog, std::string &element) {
-    std::pair<bool, int> result;
-    // Find given element in vector
-    auto it = std::find(productionLog.begin(), productionLog.end(), element);
+/**
+ * @brief checks if a file is empty
+ * @param pFile any type of file
+ * @return true if the file is empty, false otherwise
+ */
+bool isEmpty(std::ifstream &pFile) {
+    return pFile.peek() == std::ifstream::traits_type::eof();
+}
 
-    if (it != productionLog.end()) {
-        result.second = distance(productionLog.begin(), it);
-        result.first = true;
-    } else {
-        result.first = false;
-        result.second = -1;
+/**
+ * @brief Displays certain informatioin about the products produced
+ * @param productionLog Vector with saved products that have already been produced
+ * @param productLineName Vector with items that can be produced
+ */
+void productionStatistics(std::vector<std::string> &productionLog, std::vector<std::string> &productLineName) {
+    bool reTry = true;
+    while (reTry) {
+        try {
+            std::cout
+                    << "Pick an option below by typing a number:\n1. Display items produced\n"
+                       "2. Number of each item produced" << std::endl;
+            Counters newCounter;
+            std::string badInput;
+            std::cin >> badInput;
+            int num = stoi(badInput);
+            switch (num) {
+                case 1 : {
+                    std::string numProduced;
+                    int prodLength = productionLog.size();
+                    std::cout << "Number of items produced: " << productionLog[prodLength - 1].substr(0, 2)
+                              << std::endl;
+                    break;
+                }
+                case 2: { // Audio "MM", Visual "VI", AudioMobile "AM", or VisualMobile "VM".
+                    std::cout << "Choose an item type:\n1. Audio(MM)\n2. Visual(VI)\n"
+                                 "3. Audio Mobile(AM)\n4. Visual Mobile(VM)\n";
+                    std::cin >> badInput;
+                    int innerNum = stoi(badInput);
+                    switch (innerNum) {
+                        case 1: {
+                            std::ifstream inputFromFile;
+                            inputFromFile.open("CounterMM.csv");
+                            if (isEmpty(inputFromFile)) {
+                                std::cout << "0 items of type audio mobile were produced." << std::endl;
+                            }
+                            std::string lineToChange;
+                            if (isEmpty(inputFromFile)) {
+                                lineToChange = "0";
+                            }
+                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                                inputFromFile >> lineToChange;
+                                std::cout << lineToChange << " items of type audio were produced." << std::endl;
+                            }
+                            inputFromFile.close();
+                            break;
+                        }
+                        case 2: {
+                            std::ifstream inputFromFile;
+                            inputFromFile.open("CounterVI.csv");
+                            if (isEmpty(inputFromFile)) {
+                                std::cout << "0 items of type audio mobile were produced." << std::endl;
+                            }
+                            std::string lineToChange;
+                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                                inputFromFile >> lineToChange;
+                                std::cout << lineToChange << " items of type visual were produced." << std::endl;
+                            }
+                            inputFromFile.close();
+                            break;
+                        }
+                        case 3: {
+                            std::ifstream inputFromFile;
+                            inputFromFile.open("CounterAM.csv");
+
+                            if (isEmpty(inputFromFile)) {
+                                std::cout << "0 items of type audio mobile were produced." << std::endl;
+                            }
+                            std::string lineToChange;
+                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                                inputFromFile >> lineToChange;
+                                std::cout << lineToChange << " items of type audio mobile were produced." << std::endl;
+                            }
+                            inputFromFile.close();
+                            break;
+                        }
+
+                        case 4: {
+                            std::ifstream inputFromFile;
+                            inputFromFile.open("CounterVM.csv");
+                            std::string lineToChange;
+                            if (isEmpty(inputFromFile)) {
+                                std::cout << "0 items of type audio mobile were produced." << std::endl;
+                            }
+                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                                inputFromFile >> lineToChange;
+                                std::cout << lineToChange << " items of type visual mobile were produced." << std::endl;
+                            }
+                            inputFromFile.close();
+                            break;
+                        }
+                        default:
+                            std::cout << "Invalid Selection\n";
+                            break;
+                    }
+                    break;
+                }
+                default:
+                    std::cout << "Invalid selection" << std::endl;
+                    break;
+            }
+        }
+        catch (std::invalid_argument &ex) {
+            std::cout << "Please enter a number" << std::endl;
+            continue;
+        }
+        reTry = false;
     }
-
-    return result;
-}
-
-void productionStatistics() {
-    std::cout << "FIXME" << std::endl;
 }
 
 void exit() {
