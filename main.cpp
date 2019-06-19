@@ -4,7 +4,7 @@
  *  Menu for user to select between the given options
  *
  *  @author Vladimir Hardy
- *  @bug no known bugs
+ *  @bug users can login with their username and anyone's password.
  */
 #include <iostream>
 #include <vector>
@@ -512,7 +512,8 @@ void productionStatistics(std::vector<std::string> &productionLog, std::vector<s
                             if (isEmpty(inputFromFile)) {
                                 lineToChange = "0";
                             }
-                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                            while (getline(inputFromFile,
+                                           lineToChange)) {  //if not at end of file, continue reading numbers
                                 inputFromFile >> lineToChange;
                                 std::cout << lineToChange << " items of type audio were produced." << std::endl;
                             }
@@ -526,7 +527,8 @@ void productionStatistics(std::vector<std::string> &productionLog, std::vector<s
                                 std::cout << "0 items of type audio mobile were produced." << std::endl;
                             }
                             std::string lineToChange;
-                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                            while (getline(inputFromFile,
+                                           lineToChange)) {  //if not at end of file, continue reading numbers
                                 inputFromFile >> lineToChange;
                                 std::cout << lineToChange << " items of type visual were produced." << std::endl;
                             }
@@ -541,7 +543,8 @@ void productionStatistics(std::vector<std::string> &productionLog, std::vector<s
                                 std::cout << "0 items of type audio mobile were produced." << std::endl;
                             }
                             std::string lineToChange;
-                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                            while (getline(inputFromFile,
+                                           lineToChange)) {  //if not at end of file, continue reading numbers
                                 inputFromFile >> lineToChange;
                                 std::cout << lineToChange << " items of type audio mobile were produced." << std::endl;
                             }
@@ -556,7 +559,8 @@ void productionStatistics(std::vector<std::string> &productionLog, std::vector<s
                             if (isEmpty(inputFromFile)) {
                                 std::cout << "0 items of type audio mobile were produced." << std::endl;
                             }
-                            while (getline(inputFromFile, lineToChange)) {  //if not at end of file, continue reading numbers
+                            while (getline(inputFromFile,
+                                           lineToChange)) {  //if not at end of file, continue reading numbers
                                 inputFromFile >> lineToChange;
                                 std::cout << lineToChange << " items of type visual mobile were produced." << std::endl;
                             }
