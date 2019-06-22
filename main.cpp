@@ -408,7 +408,7 @@ std::string encryptString(std::string str) {
 }
 
 /**
- * @breif Allows the user to log in, if their credentials are correct
+ * @brief Allows the user to log in, if their credentials are correct
  */
 void employeeAccount() {
     std::ifstream myInputFile("loginCreds.txt");
@@ -473,7 +473,7 @@ bool isEmpty(std::ifstream &pFile) {
 }
 
 /**
- * @brief Displays certain informatioin about the products produced
+ * @brief Displays certain information about the products produced
  * @param productionLog Vector with saved products that have already been produced
  * @param productLineName Vector with items that can be produced
  */
@@ -484,7 +484,6 @@ void productionStatistics(std::vector<std::string> &productionLog, std::vector<s
             std::cout
                     << "Pick an option below by typing a number:\n1. Display items produced\n"
                        "2. Number of each item produced" << std::endl;
-            Counters newCounter;
             std::string badInput;
             std::cin >> badInput;
             int num = stoi(badInput);
