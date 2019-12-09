@@ -12,7 +12,7 @@ My doxygen site: [Doxygen](https://Spexon.github.io/ProceduralProject/html/)
 
 
 ## Getting Started
-Open ProceduralProject.exe and download the file. Once downloaded the file should launch when opened.
+~~Open ProceduralProject.exe and download the file. Once downloaded the file should launch when opened.~~
 
 ## Built With
 
